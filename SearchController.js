@@ -8,10 +8,11 @@ search_button.addEventListener("click", function(event)
   let event_location = document.getElementById("location").value;
   let result = document.getElementById("search_result");
   let search_form = document.getElementById("form1")
+  
   if (isStringValid(start_date) && isStringValid(end_date)) {
 	  search_by_date(start_date, end_date);
   } else {
-	  result.innerHTML = "Searching by location";
+	  search_by_location(event_location)
   }
   search_form.reset()
   event.preventDefault()
@@ -19,7 +20,7 @@ search_button.addEventListener("click", function(event)
 });
 
 async function search_by_date(start_date, end_date) {
-	const url = `http://127.0.0.1:5000/api/search_conventions?start=${start_date}&end=${end_date}`;
+	const url = `http://127.0.0.1:5000/api/search_conventions_by_date?start=${start_date}&end=${end_date}`;
 	const response = await fetch(url);
     if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
@@ -27,6 +28,17 @@ async function search_by_date(start_date, end_date) {
 	const rawConventionData = await response.json();
 	displayConventionsInTable(rawConventionData);
 }
+
+async function search_by_location(event_location) {
+	const url = `http://127.0.0.1:5000/api/search_conventions_by_location?location=${event_location}`;
+	const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+    }
+	const rawConventionData = await response.json();
+	displayConventionsInTable(rawConventionData);
+}
+
 
 function isStringValid(str) {
   return str !== null && str !== undefined && str.trim().length > 0;
