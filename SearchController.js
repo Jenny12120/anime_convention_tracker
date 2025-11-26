@@ -7,13 +7,18 @@ search_button.addEventListener("click", function(event)
   let end_date = document.getElementById("end").value;
   let event_location = document.getElementById("location").value;
   let result = document.getElementById("search_result");
-  let search_form = document.getElementById("form1")
+  let search_form = document.getElementById("form1");
+  let rawConventionData = {};
   
   if (isStringValid(start_date) && isStringValid(end_date)) {
-	  search_by_date(start_date, end_date);
+	  rawConventionData = search_by_date(start_date, end_date);
   } else {
-	  search_by_location(event_location)
+	  rawConventionData = search_by_location(event_location)
   }
+  rawConventionData
+	.then(actualRawConventionData => {
+		displayConventionsInTable(actualRawConventionData);
+	})
   search_form.reset()
   event.preventDefault()
 
@@ -26,7 +31,7 @@ async function search_by_date(start_date, end_date) {
         throw new Error(`Server error: ${response.statusText}`);
     }
 	const rawConventionData = await response.json();
-	displayConventionsInTable(rawConventionData);
+	return rawConventionData
 }
 
 async function search_by_location(event_location) {
@@ -36,7 +41,7 @@ async function search_by_location(event_location) {
         throw new Error(`Server error: ${response.statusText}`);
     }
 	const rawConventionData = await response.json();
-	displayConventionsInTable(rawConventionData);
+	return rawConventionData
 }
 
 
@@ -47,7 +52,7 @@ function isStringValid(str) {
 function displayConventionsInTable(rawConventionData) {
     const tableBody = document.getElementById('conventions-body');
 	let table = document.getElementById("results");
-	let result = document.getElementById("search_result");
+	let no_result_found = document.getElementById("no_result");
 
     tableBody.innerHTML = '';
 
@@ -66,7 +71,8 @@ function displayConventionsInTable(rawConventionData) {
                 {type: 'date', value: formatted_start_date},
                 {type: 'date', value: formatted_end_date},
                 {type: 'text', value: convention.venue},
-                {type: 'url', value: convention.url}
+                {type: 'url', value: convention.url},
+				{type: 'button', value: 'Add'} 
             ];
 			
 
@@ -77,7 +83,13 @@ function displayConventionsInTable(rawConventionData) {
                     link.href = field.value;
                     link.textContent = field.value; 
 					cell.appendChild(link);
-				} else {
+				} else if (field.type === 'button') {
+					const button = document.createElement('button');
+                    button.textContent = field.value; 
+					button.style = "text-align: center;"
+					cell.style = "text-align: center;"
+					cell.appendChild(button);
+				}else {
 					cell.textContent = field.value;
 				}
 
@@ -88,8 +100,9 @@ function displayConventionsInTable(rawConventionData) {
 		
 	if (rawConventionData.length > 0) {
 		table.hidden = false;
+		no_result_found.hidden = true;
 	} else {
 		table.hidden = true;
-		result.textContent = "No conventions found in this date range.";
+		no_result_found.hidden = false;
 	}
 }
