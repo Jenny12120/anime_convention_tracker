@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Anime Convention Tracker</title>
+		<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+	</head>
+	<body>
+		<h2>Anime Convention Search</h2>
+		<form action="" id="form1">
+			<h3>Please Enter:</h3>
+			<label for="start">Start Date:</label>
+			<input type="date" id="start" name="start_date">&nbsp;&nbsp;
+			<label for="end">End Date:</label>
+			<input type="date" id="end" name="end_date"><br>
+			<b>or</b><br>
+			<label for="location">Location:</label>
+			<input type="text" id="location" name="location"><br><br>
+			<input type="submit" id="search" value="Search">
+		</form>
+	<br>
+	<div id="search_result">
+		<p id="no_result" hidden>No results found</p>
+		<table border="1" id="results" hidden>
+			<thead>
+				<tr>
+					<th>Convention</th>
+					<th>Start Date</th>
+					<th>End Date</th>
+					<th>Location</th>
+					<th>Website</th>
+					<th>Add to Tracking List</th>
+				</tr>
+			</thead>
+			<tbody id="conventions-body">
+            </tbody>
+		</table>
+	</div>
+	<script type="module" src="SearchController.js"></script>
+	</body>
+</html>

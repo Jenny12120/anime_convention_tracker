@@ -7,7 +7,7 @@ MYSQL_HOST = "anime-convention-tracker-animeconventiontracker2025.h.aivencloud.c
 MYSQL_PORT = 26181
 MYSQL_USER = "avnadmin"
 MYSQL_PASSWORD = "AVNS_YbJP225UsFzOAys_79O"
-DB_NAME = "defaultdb" # The default database name
+DB_NAME = "defaultdb" 
 
 data = [["Anirevo Toronto 2025","2025-11-21","2025-11-23", "Metro Toronto Convention Centre, Toronto ON","Canada","https://toronto.animerevolution.ca/"],
 ["Anime North 2026","2026-05-22","2026-05-24", "Toronto Congress Center / Delta Hotels by Marriott Toronto Airport & Conference Centre, Toronto ON","Canada", "https://www.animenorth.com/"],
