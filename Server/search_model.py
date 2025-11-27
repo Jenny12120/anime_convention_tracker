@@ -16,7 +16,7 @@ def connect_to_db():
                 port=MYSQL_PORT,
                 user=MYSQL_USER,
                 password=MYSQL_PASSWORD,
-                db=DB_NAME,
+                database=DB_NAME,
                 charset='utf8mb4',
                 # Key for secure connection:
                 ssl={"ssl_verify_cert": True, "ssl_ca": "aiven-ca.pem"},
@@ -25,7 +25,7 @@ def connect_to_db():
             )
     return connection
 
-def fetch_from_db(start_date, end_date):
+def fetch_from_db_date_range(start_date, end_date):
     connection = connect_to_db()
     with connection.cursor() as cursor:
         retrieve_between_dates = """
