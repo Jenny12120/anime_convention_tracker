@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Anime Convention Tracker</title>
-		<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+		<title>Anime Convention Tracker - Search</title>
 	</head>
 	<body>
 		<h2>Anime Convention Search</h2>
@@ -17,24 +16,24 @@
 			<input type="text" id="location" name="location"><br><br>
 			<input type="submit" id="search" value="Search">
 		</form>
-	<br>
-	<div id="search_result">
-		<p id="no_result" hidden>No results found</p>
-		<table border="1" id="results" hidden>
-			<thead>
-				<tr>
-					<th>Convention</th>
-					<th>Start Date</th>
-					<th>End Date</th>
-					<th>Location</th>
-					<th>Website</th>
-					<th>Add to Tracking List</th>
-				</tr>
-			</thead>
-			<tbody id="conventions-body">
-            </tbody>
-		</table>
-	</div>
-	<script type="module" src="SearchController.js"></script>
+		<br>
+		<div id="search_result">
+			<p id="no_result" hidden>No results found</p>
+			<table border="1" id="results" hidden>
+				<thead>
+					<tr>
+						<th>Convention</th>
+						<th>Start Date</th>
+						<th>End Date</th>
+						<th>Location</th>
+						<th>Website</th>
+						<th>Add to Tracking List</th>
+					</tr>
+				</thead>
+				<tbody id="conventions-body">
+				</tbody>
+			</table>
+		</div>
+		<script type="module" src="SearchController.js"></script>
 	</body>
 </html>
