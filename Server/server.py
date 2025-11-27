@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from search_model import fetch_from_db_date_range,fetch_from_db_location 
+from database_service import initialize_event_counter
 
+initialize_event_counter()
 app = Flask(__name__)
 CORS(app) 
 
