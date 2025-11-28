@@ -5,7 +5,7 @@
 	</head>
 	<body>
 		<h2>Anime Convention Search</h2>
-		<form action="" id="form1">
+		<form id="search_form">
 			<h3>Please Enter:</h3>
 			<label for="start">Start Date:</label>
 			<input type="date" id="start" name="start_date">&nbsp;&nbsp;
@@ -17,6 +17,8 @@
 			<input type="submit" id="search" value="Search">
 		</form>
 		<br>
+		<br>
+		<button id="view_tracking">View Tracking List</button>
 		<div id="search_result">
 			<p id="no_result" hidden>No results found</p>
 			<table border="1" id="results" hidden>
@@ -33,6 +35,7 @@
 				<tbody id="conventions-body">
 				</tbody>
 			</table>
+			<p id = "tracked" hidden></p>
 		</div>
 		<script type="module" src="SearchController.js"></script>
 	</body>

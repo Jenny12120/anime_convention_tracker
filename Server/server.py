@@ -1,10 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from search_model import fetch_from_db_date_range,fetch_from_db_location 
-from tracking_model import add_convention_to_tracking, retrieve_all_tracked_conventions, untrack_convention
-from database_service import initialize_event_counter
+from tracking_model import add_to_tracking, retrieve_all_tracked_conventions, untrack_convention
 
-initialize_event_counter()
 app = Flask(__name__)
 CORS(app) 
 
@@ -44,7 +42,7 @@ def add_convention_to_tracking():
     if not id:
         return jsonify({"error": "Missing id."}), 400
     try:
-        data = add_convention_to_tracking(id,name)
+        data = add_to_tracking(id,name)
         return jsonify(data)
     except Exception as e:
         print(f"Database error: {e}")

@@ -5,7 +5,8 @@ def fetch_from_db_date_range(start_date, end_date):
     connection = connect_to_db()
     with connection.cursor() as cursor:
         retrieve_between_dates = """
-        SELECT name,
+        SELECT id AS convention_id,
+            name,
             start_date,
             end_date,
             location AS venue,
@@ -28,7 +29,8 @@ def fetch_from_db_location(location):
    
     with connection.cursor() as cursor:
         retrieve_location = """
-        SELECT name,
+        SELECT id AS convention_id,
+            name,
             start_date,
             end_date,
             location AS venue,
