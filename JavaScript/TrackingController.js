@@ -1,24 +1,66 @@
-let remove_button = document.getElementById("remove");
+window.onload = load_interested_list;
 
-remove_button.addEventListener("click", function(event) 
+const tableBody = document.getElementById("interested-body");
+
+async function load_interested_list() {
+  const url = `http://127.0.0.1:5000/api/get_all_tracked_conventions`;
+  const response = await fetch(url);
+
+  if (response.ok) {
+    const rawConventionData = await response.json();
+    displayConventionsInTable(rawConventionData);
+  }
+}
+
+async function remove_from_tracking(convention_id, row) {
+    const url = `http://127.0.0.1:5000/api/delete_from_tracking`;
+    const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+            'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                id: convention_id,
+            })
+        }
+    );
+
+    const deleted = document.getElementById("deleted");
+
+    if (!response.ok) {
+        deleted.textContent = "Failed to delete tracking list"
+        deleted.hidden = false;
+        setTimeout(function() {
+            deleted.hidden = true;
+            }, 2000)
+	} 
+
+    row.remove();  
+}
+
+tableBody.addEventListener("click", function(event) 
 {
-
+    if (event.target.closest('.remove_convention')) {
+        const row = event.target.closest("tr");
+        const tracking_id = row.dataset.trackingId;
+        remove_from_tracking(tracking_id, row)
+  }       
 });
 
-download_button.addEventListener("click", function(event){
 
-});
-
-function displayConventionsInTable(rawConventionData) {
-    const tableBody = document.getElementById('conventions-body');
-	let table = document.getElementById("results");
-	let no_result_found = document.getElementById("no_result");
+function displayConventionsInTable(conventionData) {
+    const tableBody = document.getElementById('interested-body');
+	let table = document.getElementById("interested");
+	let empty_list = document.getElementById("no_item");
 
     tableBody.innerHTML = '';
 
-	rawConventionData.forEach(convention => {
+	conventionData.forEach(convention => {
 			const row = document.createElement('tr');
-			const formatDate = (dateString) => {
+            row.setAttribute("data-tracking-id", convention.id);	
+            row.setAttribute("data-url", convention.url);	
+
+            const formatDate = (dateString) => {
                 const parts = dateString.split(' ');
                 const dateParts = parts.slice(0, 4);
                 return dateParts.join(' '); 
@@ -31,7 +73,7 @@ function displayConventionsInTable(rawConventionData) {
                 {type: 'date', value: formatted_start_date},
                 {type: 'date', value: formatted_end_date},
                 {type: 'text', value: convention.venue},
-				{type: 'button', value: 'Action'} 
+				{type: 'button', value: 'Actions'} 
             ];
 			
 
@@ -43,17 +85,8 @@ function displayConventionsInTable(rawConventionData) {
                     link.textContent = field.value; 
 					cell.appendChild(link);
 				} else if (field.type === 'button') {
-					const remove_button = document.createElement('button');
-                    const download_button = document.createElement('button');
-                    remove_button.textContent = "Remove"; 
-                    download_button.textContent = "Download Calendar File"; 
-					remove_button.style = "text-align: center;"
-                    download_button.style = "text-align: center;"
-					cell.style = "text-align: center;"
-					cell.appendChild(remove_button);
-                    cell.appendChild("&nbsp;&nbsp;");
-                    cell.appendChild(download_button);
-				}else {
+					setup_buttons(cell);
+				} else {
 					cell.textContent = field.value;
 				}
 
@@ -62,11 +95,27 @@ function displayConventionsInTable(rawConventionData) {
 			tableBody.appendChild(row);
 		});
 		
-	if (rawConventionData.length > 0) {
+	if (conventionData.length > 0) {
 		table.hidden = false;
-		no_result_found.hidden = true;
+		empty_list.hidden = true;
 	} else {
 		table.hidden = true;
-		no_result_found.hidden = false;
+		empty_list.hidden = false;
 	}
+
+    function setup_buttons(cell) {
+        const remove_button = document.createElement('button');
+        const download_button = document.createElement('button');
+        remove_button.textContent = "Remove"; 
+        remove_button.classList = "remove_convention"
+        download_button.textContent = "Download Calendar File"; 
+        download_button.classList = "download_ics"
+        remove_button.style = "text-align: center;"
+        download_button.style = "text-align: center;"
+        cell.style = "text-align: center;"
+        const space = document.createTextNode('\u00A0');
+        cell.appendChild(remove_button);
+        cell.appendChild(space);
+        cell.appendChild(download_button);
+    }
 }

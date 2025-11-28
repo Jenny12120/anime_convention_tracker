@@ -8,17 +8,19 @@ view_tracking.addEventListener("click", function(event) {
 })
 
 tableBody.addEventListener("click", function(event) {
+  if (event.target.closest('.add_to_tracking')) {
     const row = event.target.closest("tr");
     const convention_id = row.dataset.conventionId;
     const convention_name = row.dataset.conventionName;
-    add_to_tracking(convention_id, convention_name);   
+    add_to_tracking(convention_id, convention_name);
+  }       
 })
 
-
-
 async function add_to_tracking(convention_id, convention_name) {
-  const url = `http://127.0.0.1:5000/api/add_to_tracking`;
-	const response = await fetch(url, {method: "POST",
+    const url = `http://127.0.0.1:5000/api/add_to_tracking`;
+    console.log(convention_id)
+    console.log(convention_name)
+    const response = await fetch(url, {method: "POST",
         headers: {
         'Content-Type': 'application/json' 
         },
@@ -26,16 +28,18 @@ async function add_to_tracking(convention_id, convention_name) {
             id: convention_id,
             name: convention_name
         })
-  })
+    })
 
-	const success = document.getElementById("tracked");
-  success.hidden = false;
-	if (!response.ok) {
-    success.textContent = "Failed to add to tracking list"
-	} else {
-    success.textContent = "Successfully to added to tracking list"
+  const success = document.getElementById("tracked");
+
+  if (!response.ok) {
+        success.textContent = "Failed to add to tracking list"
+  } else {
+        success.textContent = "Successfully to added to tracking list"
   }
 
+  success.hidden = false;
+  
   setTimeout(function() {
     success.hidden = true;
   }, 2000)
@@ -78,14 +82,14 @@ function isStringValid(str) {
   return str !== null && str !== undefined && str.trim().length > 0;
 }
 
-function displayConventionsInTable(rawConventionData) {
+function displayConventionsInTable(conventionData) {
   const tableBody = document.getElementById('conventions-body');
 	const table = document.getElementById("results");
 	const no_result_found = document.getElementById("no_result");
 
     tableBody.innerHTML = '';
 
-	rawConventionData.forEach(convention => {
+	conventionData.forEach(convention => {
 			const row = document.createElement('tr');
       console.log(convention)
       row.setAttribute("data-convention-id", convention.convention_id);
@@ -127,7 +131,7 @@ function displayConventionsInTable(rawConventionData) {
 			tableBody.appendChild(row);
 		});
 		
-	if (rawConventionData.length > 0) {
+	if (conventionData.length > 0) {
 		table.hidden = false;
 		no_result_found.hidden = true;
 	} else {
@@ -140,7 +144,7 @@ function setup_add_button(field) {
   	const button = document.createElement('button');
     button.textContent = field.value; 
 		button.style = "text-align: center;";
-    button.class = "add_to_tracking";
+    button.classList = "add_to_tracking";
 
     return button;
 }

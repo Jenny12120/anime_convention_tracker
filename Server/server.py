@@ -36,8 +36,9 @@ def search_conventions_by_location():
 
 @app.route('/api/add_to_tracking', methods=['POST'])
 def add_convention_to_tracking():
-    id = request.args.get('id')
-    name = request.args.get('name')
+    data = request.get_json()
+    id = data.get('id')
+    name = data.get('name')
     
     if not id:
         return jsonify({"error": "Missing id."}), 400
@@ -59,8 +60,9 @@ def get_all_tracked_conventions():
 
 @app.route('/api/delete_from_tracking', methods=['DELETE'])
 def delete_from_tracking():
-    id = request.args.get('id')
-    
+    data = request.get_json()
+    id = data.get('id')
+    print(f"Server received DELETE request for ID: {id}")
     if not id:
         return jsonify({"error": "Missing id to delete."}), 400
     try:
