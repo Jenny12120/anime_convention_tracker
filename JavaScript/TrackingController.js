@@ -12,6 +12,10 @@ async function loadInterestedlist() {
   }
 }
 
+view_tracking.addEventListener("click", function(event) {
+    window.open("SearchPage.html");
+})
+
 async function removeFromTracking(convention_id, row) {
     const url = `http://127.0.0.1:5000/api/delete_from_tracking`;
     const response = await fetch(url, {
