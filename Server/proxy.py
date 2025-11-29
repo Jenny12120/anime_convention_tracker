@@ -42,7 +42,7 @@ class RealCalendarFile(CalendarFile):
             }
 
         if (end_date > start_date) :
-            recurrence_count = (end_date - start_date).days
+            recurrence_count = (end_date - start_date).days + 1
             event["recurring"] = True
             recurrence_details = {
                 "frequency":  "DAILY",
@@ -65,6 +65,8 @@ class ProxyCalendarFile(CalendarFile):
             try:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(ics_file)
+                    return {'directory' : self.cache_dir,
+                            'file_name': ics_file_name}
             except Exception as e:
                     print(f"Failed to cache file: {e}")
             return None

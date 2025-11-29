@@ -56,11 +56,27 @@ async function downloadIcs(convention_id, row) {
         }
     );
     if (response.ok) {
-        deleted.textContent = "Dowloaded";
-        deleted.hidden = false;
+        const blob = await response.blob();
+        downloadFile(blob, "convention.ics");
     }
 
 }
+
+function downloadFile(blob, file_name) {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.hidden = true;
+    link.href = url;
+    link.download = file_name;
+
+    document.body.appendChild(link);
+    link.click();
+
+    window.URL.revokeObjectURL(url); 
+    document.body.removeChild(link)
+}
+
 tableBody.addEventListener("click", function(event) 
 {
     if (event.target.closest('.remove_convention')) {

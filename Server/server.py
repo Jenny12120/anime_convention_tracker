@@ -77,17 +77,19 @@ def delete_from_tracking():
 @app.route('/api/download_ics_file', methods=['POST'])
 def download_calendar_file():
     data = request.get_json()
-    
+    print(data)
     if not data:
         return jsonify({"error": "No data to initiate download request"}), 400
     try:
         path = ProxyCalendarFile(current_app.config['ICS_CACHE']).download_ics(data)
+        print(path)
         return send_from_directory(directory=path.get('directory'),  
                                     path=path.get('file_name'), 
                                     as_attachment=True,
-                                    mimetype='text/calendar')
+                                    mimetype='text/calendar',
+                                    download_name='convention.ics')
     except Exception as e:
-        print(f"Database error: {e}")
+        print(f"Download error: {e}")
         return jsonify({"error": "A server error occurred while fetching data."}), 500
                     
 if __name__ == '__main__':
