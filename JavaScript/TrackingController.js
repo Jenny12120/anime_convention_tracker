@@ -1,8 +1,8 @@
-window.onload = load_interested_list;
+window.onload = loadInterestedlist;
 
 const tableBody = document.getElementById("interested-body");
 
-async function load_interested_list() {
+async function loadInterestedlist() {
   const url = `http://127.0.0.1:5000/api/get_all_tracked_conventions`;
   const response = await fetch(url);
 
@@ -12,7 +12,7 @@ async function load_interested_list() {
   }
 }
 
-async function remove_from_tracking(convention_id, row) {
+async function removeFromTracking(convention_id, row) {
     const url = `http://127.0.0.1:5000/api/delete_from_tracking`;
     const response = await fetch(url, {
             method: "DELETE",
@@ -20,7 +20,7 @@ async function remove_from_tracking(convention_id, row) {
             'Content-Type': 'application/json' 
             },
             body: JSON.stringify({
-                id: convention_id,
+                id: convention_id
             })
         }
     );
@@ -38,13 +38,41 @@ async function remove_from_tracking(convention_id, row) {
     row.remove();  
 }
 
+async function downloadIcs(convention_id, row) {
+    const url = `http://127.0.0.1:5000/api/download_ics_file`;
+    const response = await fetch(url, {
+            method: "POST",
+            headers: {
+            'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                id: convention_id,
+                name: row.dataset.name,
+                url: row.dataset.url,
+                venue: row.dataset.venue,
+                start_date: formatDate(row.dataset.startDate),
+                end_date: formatDate(row.dataset.endDate)
+            })
+        }
+    );
+    if (response.ok) {
+        deleted.textContent = "Dowloaded";
+        deleted.hidden = false;
+    }
+
+}
 tableBody.addEventListener("click", function(event) 
 {
     if (event.target.closest('.remove_convention')) {
         const row = event.target.closest("tr");
         const tracking_id = row.dataset.trackingId;
-        remove_from_tracking(tracking_id, row)
-  }       
+        removeFromTracking(tracking_id, row)
+    } else if (event.target.closest('.download_ics')) {
+        const row = event.target.closest("tr");
+        const tracking_id = row.dataset.trackingId;
+        downloadIcs(tracking_id, row);
+
+    }     
 });
 
 
@@ -57,14 +85,8 @@ function displayConventionsInTable(conventionData) {
 
 	conventionData.forEach(convention => {
 			const row = document.createElement('tr');
-            row.setAttribute("data-tracking-id", convention.id);	
-            row.setAttribute("data-url", convention.url);	
+            add_data_attribute_to_row(row, convention);
 
-            const formatDate = (dateString) => {
-                const parts = dateString.split(' ');
-                const dateParts = parts.slice(0, 4);
-                return dateParts.join(' '); 
-            };
             const formatted_start_date = formatDate(convention.start_date);
             const formatted_end_date = formatDate(convention.end_date);
 			
@@ -102,20 +124,38 @@ function displayConventionsInTable(conventionData) {
 		table.hidden = true;
 		empty_list.hidden = false;
 	}
+}
 
-    function setup_buttons(cell) {
-        const remove_button = document.createElement('button');
-        const download_button = document.createElement('button');
-        remove_button.textContent = "Remove"; 
-        remove_button.classList = "remove_convention"
-        download_button.textContent = "Download Calendar File"; 
-        download_button.classList = "download_ics"
-        remove_button.style = "text-align: center;"
-        download_button.style = "text-align: center;"
-        cell.style = "text-align: center;"
-        const space = document.createTextNode('\u00A0');
-        cell.appendChild(remove_button);
-        cell.appendChild(space);
-        cell.appendChild(download_button);
+function formatDate(dateString) {
+    if (dateString) {
+        const parts = dateString.split(' ');
+        const dateParts = parts.slice(0, 4);
+        return dateParts.join(' '); 
     }
+    return '';
+}
+
+function setup_buttons(cell) {
+    const remove_button = document.createElement('button');
+    const download_button = document.createElement('button');
+    remove_button.textContent = "Remove"; 
+    remove_button.classList = "remove_convention"
+    download_button.textContent = "Download Calendar File"; 
+    download_button.classList = "download_ics"
+    remove_button.style = "text-align: center;"
+    download_button.style = "text-align: center;"
+    cell.style = "text-align: center;"
+    const space = document.createTextNode('\u00A0');
+    cell.appendChild(remove_button);
+    cell.appendChild(space);
+    cell.appendChild(download_button);
+}
+
+function add_data_attribute_to_row(row, convention) {
+    row.setAttribute("data-tracking-id", convention.id);	
+    row.setAttribute("data-url", convention.url);	
+    row.setAttribute("data-name", convention.name);
+    row.setAttribute("data-venue", convention.venue);
+    row.setAttribute("data-start-date", convention.start_date);
+    row.setAttribute("data-end-date", convention.end_date);
 }
